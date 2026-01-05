@@ -9,7 +9,18 @@ open Std Std.Iterators Std.Iterators.Iter
 
 universe w
 
-/-- Convert an iterator to enumerated iterator -/
+/--
+Convert an iterator to an enumerated iterator.
+
+Returns a new iterator that yields pairs of `(index, value)` where `index` starts from 0
+and increments for each element in the original iterator.
+
+# Example
+```lean
+#eval [1, 4, 66].iter.enumerate.toArray  -- [(0, 1), (1, 4), (2, 66)]
+#eval #[1, 4, 66].iter.enumerate.toArray -- [(0, 1), (1, 4), (2, 66)]
+```
+-/
 @[inline]
 def Std.Iterators.Iter.enumerate {α β : Type} [Iterator α Id β] [IteratorLoop α Id Id] [Finite α Id]
     (it : Iter (α := α) β) : Iter (α := Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
@@ -18,7 +29,17 @@ def Std.Iterators.Iter.enumerate {α β : Type} [Iterator α Id β] [IteratorLoo
 -- #eval [1, 4, 66].iter.enumerate.toArray
 -- #eval #[1, 4, 66].iter.enumerate.toArray
 
-/-- sum on iterator -/
+/--
+Compute the sum of all elements in an iterator.
+
+Consumes the iterator and returns the sum of all natural number elements.
+Returns 0 for an empty iterator.
+
+# Example
+```lean
+#eval [1, 4, 66].iter.sum  -- 71
+```
+-/
 @[inline]
 def Std.Iterators.Iter.sum {α : Type} [Iterator α Id Nat] [IteratorLoop α Id Id]
     (it : Iter (α := α) Nat) : Nat :=
@@ -26,21 +47,56 @@ def Std.Iterators.Iter.sum {α : Type} [Iterator α Id Nat] [IteratorLoop α Id 
 
 -- #eval [1, 4, 66].iter.sum
 
-/-- product on iterator -/
+/--
+Compute the product of all elements in an iterator.
+
+Consumes the iterator and returns the product of all natural number elements.
+Returns 1 for an empty iterator (multiplicative identity).
+
+# Example
+```lean
+#eval [2, 3, 6].iter.product  -- 36
+```
+-/
 @[inline]
 def Std.Iterators.Iter.product {α : Type} [Iterator α Id Nat] [IteratorLoop α Id Id]
     (it : Iter (α := α) Nat) : Nat :=
   it.fold (· * ·) 1
 -- #eval [2, 3, 6].iter.product
 
-/-- return a HashMap over an iterator -/
+/--
+Convert an iterator of key-value pairs into a HashMap.
+
+Consumes an iterator of pairs `(key, value)` and constructs a HashMap from them.
+If duplicate keys exist, the last value for each key is retained.
+
+The function pre-allocates capacity based on the iterator's count for efficiency.
+
+# Example
+```lean
+#eval [(2, "aaa"), (3, "three"), (6, "six")].iter.toHashMap
+  -- HashMap with entries: 2 → "aaa", 3 → "three", 6 → "six"
+```
+-/
 @[inline]
 def Std.Iterators.Iter.toHashMap {α β γ : Type} [BEq β] [Hashable β] [Iterator α Id (β × γ)] [IteratorLoop α Id Id]
     (it : Iter (α := α) (β × γ)) : HashMap β γ :=
   it.fold (fun acc pair ↦ acc.insert pair.fst pair.snd) (HashMap.emptyWithCapacity it.count)
 -- #eval [(2, "aaa"), (3, "three"), (6, "six")].iter.toHashMap
 
-/-- return a HashSet over an iterator -/
+/--
+Convert an iterator into a HashSet.
+
+Consumes an iterator and constructs a HashSet containing all unique elements from the iterator.
+Duplicate elements are automatically eliminated.
+
+The function pre-allocates capacity based on the iterator's count for efficiency.
+
+# Example
+```lean
+#eval [2, 3, 6].iter.toHashSet  -- HashSet containing {2, 3, 6}
+```
+-/
 @[inline]
 def Std.Iterators.Iter.toHashSet {α β : Type} [BEq β] [Hashable β] [Iterator α Id β] [IteratorLoop α Id Id]
     (it : Iter (α := α) β) : HashSet β :=
