@@ -1,6 +1,6 @@
 # Lean4 Itertools
 
-A Lean4 library that provides Rust-like iterator methods for working with collections efficiently. This library extends Lean4's standard iterator functionality with commonly-used operations inspired by Rust's iterator traits.
+A Lean4 library that provides Rust-like iterator methods for working with collections efficiently for Rust programmers using Lean4. This library extends Lean4's standard iterator functionality with commonly-used operations inspired by Rust's iterator traits.
 
 ## Overview
 
