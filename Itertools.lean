@@ -103,3 +103,30 @@ def Std.Iterators.Iter.toHashSet {α β : Type} [BEq β] [Hashable β] [Iterator
   it.fold (·.insert ·) (HashSet.emptyWithCapacity it.count)
 -- #eval [2, 3, 6].iter.toHashSet
 
+-- universe u
+
+class IterCollect (γ : Type → Type) where
+  collectTo {α β : Type} [BEq β] [Nonempty β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] : Iter (α := α) β → γ β
+
+instance : IterCollect List where
+  collectTo {α β : Type} [BEq β] [Nonempty β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] (it : Iter (α := α) β) : List β := it.toList
+
+instance : IterCollect Array where
+  collectTo {α β : Type} [BEq β] [Nonempty β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] (it : Iter (α := α) β) : Array β := it.toArray
+
+-- #check IterCollect.collectTo (γ := List)
+#guard (#[1, 2, 4].iter |> IterCollect.collectTo (γ := List)) == [1, 2, 4]
+
+-- instance : IterCollect HashSet where
+--   collectTo {α β : Type} [BEq β] [Nonempty β] [Hashable β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] (it : Iter (α := α) β) : HashSet β := it.toHashSet
+
+
+/-
+-- collect to the given type
+@[inline]
+partial
+def Std.Iterators.Iter.collect {α β : Type} [BEq β] [Iterator α Id β] [IteratorCollect α Id Id] (it : Iter (α := α) β) (γ : Type → Type) [IterCollect γ] [Nonempty (γ β)] : γ β := IterCollect.collectTo (γ := γ) it
+
+#check IterCollect.collectTo (β := List) #[1, 2, 3].iter
+-- #eval (#[1, 2, 3].iter |>.collect List) == #[]
+-/
