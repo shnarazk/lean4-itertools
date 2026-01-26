@@ -1,11 +1,12 @@
 module
 
 public import Lean
+public import Std.Data.Iterators.Combinators.Monadic.Zip
 public import Std.Data.Iterators.Combinators.Zip
 
 @[expose] public section
 
-open Std Std.Iterators Std.Iterators.Iter
+open Std Std.Iterators Std.Iter
 
 universe w
 
@@ -23,7 +24,7 @@ and increments for each element in the original iterator.
 -/
 @[inline]
 def Std.Iterators.Iter.enumerate {α β : Type} [Iterator α Id β] [IteratorLoop α Id Id] [Finite α Id]
-    (it : Iter (α := α) β) : Iter (α := Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
+    (it : Iter (α := α) β) : Iter (α := Std.Iterators.Types.Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
   (0...it.count).iter.zip it
 
 -- #eval [1, 4, 66].iter.enumerate.toArray
