@@ -1,11 +1,12 @@
 module
 
 public import Lean
+public import Std.Data.Iterators.Combinators.Monadic.Zip
 public import Std.Data.Iterators.Combinators.Zip
 
 @[expose] public section
 
-open Std Std.Iterators Std.Iterators.Iter
+open Std Iterators -- Iter
 
 universe w
 
@@ -23,7 +24,7 @@ and increments for each element in the original iterator.
 -/
 @[inline]
 def Std.Iterators.Iter.enumerate {α β : Type} [Iterator α Id β] [IteratorLoop α Id Id] [Finite α Id]
-    (it : Iter (α := α) β) : Iter (α := Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
+    (it : Iter (α := α) β) : Iter (α := Std.Iterators.Types.Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
   (0...it.count).iter.zip it
 
 -- #eval [1, 4, 66].iter.enumerate.toArray
@@ -104,7 +105,7 @@ def Std.Iterators.Iter.toHashSet {α β : Type} [BEq β] [Hashable β] [Iterator
 -- #eval [2, 3, 6].iter.toHashSet
 
 -- universe u
-
+/- FIXME
 class IterCollect (γ : Type → Type) where
   collectTo {α β : Type} [BEq β] [Nonempty β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] : Iter (α := α) β → γ β
 
@@ -121,7 +122,6 @@ instance : IterCollect Array where
 --   collectTo {α β : Type} [BEq β] [Nonempty β] [Hashable β] [Iterator α Id β] [Finite α Id] [IteratorCollect α Id Id] (it : Iter (α := α) β) : HashSet β := it.toHashSet
 
 
-/-
 -- collect to the given type
 @[inline]
 partial
