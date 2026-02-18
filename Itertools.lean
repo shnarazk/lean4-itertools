@@ -25,7 +25,7 @@ and increments for each element in the original iterator.
 @[inline]
 def Std.Iter.enumerate {α β : Type} [Iterator α Id β] [IteratorLoop α Id Id] [Finite α Id]
     (it : Iter (α := α) β) : Iter (α := Std.Iterators.Types.Zip (Rxo.Iterator Nat) Id α β) (Nat × β) :=
-  (0...it.count).iter.zip it
+  (0...it.length).iter.zip it
 
 -- #eval [1, 4, 66].iter.enumerate.toArray
 -- #eval #[1, 4, 66].iter.enumerate.toArray
@@ -82,7 +82,7 @@ The function pre-allocates capacity based on the iterator's count for efficiency
 @[inline]
 def Std.Iter.toHashMap {α β γ : Type} [BEq β] [Hashable β] [Iterator α Id (β × γ)] [IteratorLoop α Id Id]
     (it : Iter (α := α) (β × γ)) : HashMap β γ :=
-  it.fold (fun acc pair ↦ acc.insert pair.fst pair.snd) (HashMap.emptyWithCapacity it.count)
+  it.fold (fun acc pair ↦ acc.insert pair.fst pair.snd) (HashMap.emptyWithCapacity it.length)
 -- #eval [(2, "aaa"), (3, "three"), (6, "six")].iter.toHashMap
 
 /--
@@ -101,6 +101,5 @@ The function pre-allocates capacity based on the iterator's count for efficiency
 @[inline]
 def Std.Iter.toHashSet {α β : Type} [BEq β] [Hashable β] [Iterator α Id β] [IteratorLoop α Id Id]
     (it : Iter (α := α) β) : HashSet β :=
-  it.fold (·.insert ·) (HashSet.emptyWithCapacity it.count)
+  it.fold (·.insert ·) (HashSet.emptyWithCapacity it.length)
 -- #eval [2, 3, 6].iter.toHashSet
-
