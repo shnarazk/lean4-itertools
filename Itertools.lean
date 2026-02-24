@@ -95,11 +95,11 @@ The function pre-allocates capacity based on the iterator's count for efficiency
 
 # Example
 ```lean
-#eval [2, 3, 6].iter.toHashSet  -- HashSet containing {2, 3, 6}
+#eval [2, 3, 6].iter.toHashSet'  -- HashSet containing {2, 3, 6}
 ```
 -/
 @[inline]
-def Std.Iter.toHashSet {α β : Type} [BEq β] [Hashable β] [Iterator α Id β] [IteratorLoop α Id Id]
+def Std.Iter.toHashSet' {α β : Type} [BEq β] [Hashable β] [Iterator α Id β] [IteratorLoop α Id Id]
     (it : Iter (α := α) β) : HashSet β :=
   it.fold (·.insert ·) (HashSet.emptyWithCapacity it.length)
 -- #eval [2, 3, 6].iter.toHashSet
