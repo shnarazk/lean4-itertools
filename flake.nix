@@ -4,10 +4,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
   outputs =
-    {
-      nixpkgs,
-      ...
-    }:
+    { self, nixpkgs }:
     let
       forAllSystems =
         f:
